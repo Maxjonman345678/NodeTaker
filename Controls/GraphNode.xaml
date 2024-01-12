@@ -1,0 +1,37 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NodeGraphTest.Controls"
+             xmlns:Converters="clr-namespace:NodeGraphTest.Data.Converters" x:Name="userControl" x:Class="NodeGraphTest.Controls.GraphNode"
+             mc:Ignorable="d" 
+             MinHeight="85" MinWidth="150" MaxWidth="500" MaxHeight="500">
+    <UserControl.Resources>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="baseGrid">
+        <Border x:Name="border" Grid.Row="1" Background="{StaticResource BodyBrush}" CornerRadius="13" Margin="0,0,0,0" PreviewMouseDown="Border_PreviewMouseDown" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
+            <Grid x:Name="grid" Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="3"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBox Style="{DynamicResource nodeTextBox}" Grid.Row="0" Text="n/a" FontSize="22" Margin="0,3,0,3" FontFamily="Segoe UI" Panel.ZIndex="1" MouseEnter="TextBox_MouseEnter" MouseLeave="TextBox_MouseLeave" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left"/>
+                <Border Grid.Row="1" Background="{StaticResource CtrlHoverBrush}" CornerRadius="1" Margin="0,0,0,0"/>
+                <TextBox Style="{DynamicResource nodeTextBox}" Grid.Row="2" Text="n/a" FontSize="22" Margin="0,3,0,3" FontFamily="Segoe UI" Panel.ZIndex="1" MouseEnter="TextBox_MouseEnter" MouseLeave="TextBox_MouseLeave" TextWrapping="WrapWithOverflow" Width="{Binding ActualWidth, ElementName=grid, Mode=OneWay}"/>
+            </Grid>
+        </Border>
+
+        <Ellipse x:Name="BottomNC" Width="8" Height="8" Style="{StaticResource NodeStyle}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-4" MouseLeftButtonDown="BottomNC_MouseLeftButtonDown" MouseLeftButtonUp="BCon_MouseLeftButtonUp" Panel.ZIndex="1"/>
+        <Ellipse x:Name="TopNC"    Width="8" Height="8" Style="{StaticResource NodeStyle}" HorizontalAlignment="Center" VerticalAlignment="Top"    Margin="0,-4,0,0"  MouseLeftButtonDown="TopNC_MouseLeftButtonDown" MouseLeftButtonUp="TCon_MouseLeftButtonUp" Panel.ZIndex="1"/>
+        <Ellipse x:Name="LeftNC"   Width="8" Height="8" Style="{StaticResource NodeStyle}" HorizontalAlignment="Left" VerticalAlignment="Center"   Margin="-4,0,0,0" MouseLeftButtonDown="LeftNC_MouseLeftButtonDown" MouseLeftButtonUp="LCon_MouseLeftButtonUp"/>
+        <Ellipse x:Name="RightNC"  Width="8" Height="8" Style="{StaticResource NodeStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  Margin="0,0,-4,0"  MouseLeftButtonDown="RightNC_MouseLeftButtonDown" MouseLeftButtonUp="RCon_MouseLeftButtonUp" />
+
+        <Thumb Style="{DynamicResource resizeNodeGrip}" x:Name="resizeT" VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="{DynamicResource PrimaryBrush}" DragDelta="onDragDelta" DragStarted="onDragStarted" DragCompleted="onDragCompleted" Width="16" Height="16" IsManipulationEnabled="True"/>
+
+        <local:ToolMenu x:Name="toolBar" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-20,0,0" Visibility="{Binding IsEditing, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Converter={StaticResource BoolToVisibilityConverter}}" MouseLeave="toolBar_MouseLeave" Height="20" ColorClick="colorFillBtn_Click" EditClick="editBtn_Click" DeleteClick="deleteBtn_Click"/>
+    </Grid>
+
+</UserControl>

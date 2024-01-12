@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="NodeGraphTest.Controls.ToolMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NodeGraphTest.Controls"
+             mc:Ignorable="d">
+    <StackPanel Background="Transparent" Orientation="Horizontal" >
+        <local:ToolMenuItem x:Name="fillBtn" Icon="{StaticResource colorFillIcon}" IconHover="{StaticResource colorFillIconHover}" IconPress="{StaticResource colorFillIcon}"/>
+
+        <local:ToolMenuItem x:Name="editBtn" Icon="{StaticResource editIcon}" IconHover="{StaticResource editIconHover}" IconPress="{StaticResource editIcon}"/>
+
+        <local:ToolMenuItem x:Name="deleteBtn" Icon="{StaticResource deleteIcon}" IconHover="{StaticResource deleteIconHover}" IconPress="{StaticResource deleteIcon}"/>
+        
+    </StackPanel>
+</UserControl>

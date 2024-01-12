@@ -1,0 +1,55 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <DrawingImage x:Key="deleteIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <GeometryDrawing Brush="{StaticResource PrimaryBrush}" Geometry="F1 M24,24z M0,0z M5,20A2,2,0,0,0,7,22L17,22A2,2,0,0,0,19,20L19,8 21,8 21,6 17,6 17,4A2,2,0,0,0,15,2L9,2A2,2,0,0,0,7,4L7,6 3,6 3,8 5,8z M9,4L15,4 15,6 9,6z M8,8L17,8 17,20 7,20 7,8z" />
+                <GeometryDrawing Brush="{StaticResource PrimaryBrush}" Geometry="F1 M24,24z M0,0z M9,10L11,10 11,18 9,18z M13,10L15,10 15,18 13,18z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="deleteIconHover">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <GeometryDrawing Brush="{StaticResource WindowBrush}" Geometry="F1 M24,24z M0,0z M5,20A2,2,0,0,0,7,22L17,22A2,2,0,0,0,19,20L19,8 21,8 21,6 17,6 17,4A2,2,0,0,0,15,2L9,2A2,2,0,0,0,7,4L7,6 3,6 3,8 5,8z M9,4L15,4 15,6 9,6z M8,8L17,8 17,20 7,20 7,8z" />
+                <GeometryDrawing Brush="{StaticResource WindowBrush}" Geometry="F1 M24,24z M0,0z M9,10L11,10 11,18 9,18z M13,10L15,10 15,18 13,18z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="editIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <GeometryDrawing Brush="{StaticResource PrimaryBrush}" Geometry="F1 M24,24z M0,0z M8.707,19.707L18,10.414 13.586,6 4.293,15.293A1.003,1.003,0,0,0,4.03,15.757L3,21 8.242,19.97C8.418,19.926,8.579,19.835,8.707,19.707z M21,7.414A2,2,0,0,0,21,4.586L19.414,3A2,2,0,0,0,16.586,3L15,4.586 19.414,9 21,7.414z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="editIconHover">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <GeometryDrawing Brush="{StaticResource WindowBrush}" Geometry="F1 M24,24z M0,0z M8.707,19.707L18,10.414 13.586,6 4.293,15.293A1.003,1.003,0,0,0,4.03,15.757L3,21 8.242,19.97C8.418,19.926,8.579,19.835,8.707,19.707z M21,7.414A2,2,0,0,0,21,4.586L19.414,3A2,2,0,0,0,16.586,3L15,4.586 19.414,9 21,7.414z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="colorFillIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <GeometryDrawing Brush="{StaticResource PrimaryBrush}" Geometry="F1 M24,24z M0,0z M20,14C19.908,14.064 18,16.083 18,17.5 18,18.994 18.949,19.948 20,20 20.906,20.044 22,19.109 22,17.5 22,16 20.092,14.064 20,14z M9.586,20C9.964,20.378 10.466,20.586 11,20.586 11.534,20.586 12.036,20.378 12.414,20L19.414,13 18.707,12.293 11,4.586 8.707,2.293 7.293,3.707 9.586,6 4,11.586C3.622,11.964 3.414,12.466 3.414,13 3.414,13.534 3.622,14.036 4,14.414L9.586,20z M11,7.414L16.586,13 5.414,13 11,7.414z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="colorFillIconHover">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <GeometryDrawing Brush="{StaticResource WindowBrush}" Geometry="F1 M24,24z M0,0z M20,14C19.908,14.064 18,16.083 18,17.5 18,18.994 18.949,19.948 20,20 20.906,20.044 22,19.109 22,17.5 22,16 20.092,14.064 20,14z M9.586,20C9.964,20.378 10.466,20.586 11,20.586 11.534,20.586 12.036,20.378 12.414,20L19.414,13 18.707,12.293 11,4.586 8.707,2.293 7.293,3.707 9.586,6 4,11.586C3.622,11.964 3.414,12.466 3.414,13 3.414,13.534 3.622,14.036 4,14.414L9.586,20z M11,7.414L16.586,13 5.414,13 11,7.414z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    
+</ResourceDictionary>

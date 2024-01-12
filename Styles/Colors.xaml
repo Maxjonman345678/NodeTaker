@@ -1,0 +1,44 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Color x:Key="TextColor">#bdbdbd</Color>
+    <Color x:Key="WindowColor">#242424</Color>
+    <Color x:Key="BodyColor">#383838</Color>
+    <Color x:Key="DarkBodyColor">#131313</Color>
+    <Color x:Key="CtrlHoverColor">#464646</Color>
+    <Color x:Key="CtrlPressColor">#2d2d2d</Color>
+
+    <Color x:Key="PrimaryColor">#1862fd</Color>
+    <Color x:Key="HoverColor">#227afd</Color>
+    <Color x:Key="PressColor">#1748fd</Color>
+
+    <Color x:Key="LightBlueColor">#7cb9e8</Color>
+    
+    <Color x:Key="WarningColor">#ffd200</Color>
+    <Color x:Key="ErrorColor">#ff0000</Color>
+
+    <Color x:Key="selectFillColor">#4C464646</Color>
+    <Color x:Key="selectStrokeColor">#464646</Color>
+
+
+    <SolidColorBrush x:Key="TextBrush" Color="{DynamicResource TextColor}"/>
+    <SolidColorBrush x:Key="WindowBrush" Color="{DynamicResource WindowColor}"/>
+    <SolidColorBrush x:Key="BodyBrush" Color="{DynamicResource BodyColor}"/>
+    <SolidColorBrush x:Key="DarkBodyBrush" Color="{DynamicResource DarkBodyColor}"/>
+    <SolidColorBrush x:Key="CtrlHoverBrush" Color="{DynamicResource CtrlHoverColor}"/>
+    <SolidColorBrush x:Key="CtrlPressBrush" Color="{DynamicResource CtrlPressColor}"/>
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource PrimaryColor}"/>
+    <SolidColorBrush x:Key="HoverBrush" Color="{DynamicResource HoverColor}"/>
+    <SolidColorBrush x:Key="PressBrush" Color="{DynamicResource PressColor}"/>
+
+    <SolidColorBrush x:Key="LightBlueBrush" Color="{DynamicResource LightBlueColor}"/>
+
+    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
+
+    <SolidColorBrush x:Key="selectFillBrush" Color="{StaticResource selectFillColor}"/>
+    <SolidColorBrush x:Key="selectStrokeBrush" Color="{StaticResource selectStrokeColor}"/>
+
+
+</ResourceDictionary>
