@@ -1,6 +1,7 @@
 ﻿using NodeGraphTest.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,23 +34,47 @@ namespace NodeGraphTest.Controls
         bool IsOverTextBox = false;
         public GraphNode()
         {
+            Focusable = true;
             InitializeComponent();
         }
 
         public GraphNode(Point startLoc, double startW, double startH)
         {
             CurrentPos = startLoc;
+            Focusable = true;
             InitializeComponent();
+            CalculateConnections(startW, startH);
+        }
+
+        public GraphNode(Point startLoc, double startW, double startH, string Title, string Body)
+        {
+            CurrentPos = startLoc;
+            InitializeComponent();
+            TitleText = Title;
+            BodyText = Body;
             CalculateConnections(startW, startH);
         }
 
         public static readonly DependencyProperty IsEditingProperty = DependencyProperty.Register("IsEditing", typeof(bool), typeof(GraphNode), new PropertyMetadata());
         public bool IsEditing
         {
-            get { return IsEditing; }
+            get { return (bool)GetValue(IsEditingProperty); }
             set { SetValue(IsEditingProperty, value); }
         }
 
+        public static readonly DependencyProperty TitleTextProperty = DependencyProperty.Register("TitleText", typeof(string), typeof(GraphNode), new PropertyMetadata());
+        public string TitleText
+        {
+            get { return (string)GetValue(TitleTextProperty); }
+            set { SetValue(TitleTextProperty, value); }
+        }
+
+        public static readonly DependencyProperty BodyTextProperty = DependencyProperty.Register("BodyText", typeof(string), typeof(GraphNode), new PropertyMetadata());
+        public string BodyText
+        {
+            get { return (string)GetValue(BodyTextProperty); }
+            set { SetValue(BodyTextProperty, value); }
+        }
 
 
         public void SetPosition(Point pos)
@@ -66,27 +91,13 @@ namespace NodeGraphTest.Controls
             LeftCon = new Point(CurrentPos.X - width / 2, CurrentPos.Y);
         }
 
-
-        private void Border_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (!IsOverTextBox)
-            {
-                MainWindow._activeObject = this;
-                MainWindow.offset = e.GetPosition(MainWindow.MainCanvas);
-                MainWindow.offset.Y -= Canvas.GetTop(MainWindow._activeObject);
-                MainWindow.offset.X -= Canvas.GetLeft(MainWindow._activeObject);
-
-                MainWindow.MainCanvas.CaptureMouse();
-                Mouse.OverrideCursor = Cursors.Hand;
-            }
-        }
-
         private void TopNC_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             MainWindow.From.pos = TopCon;
             MainWindow.From.direction = ConnectionDirection.Top;
             MainWindow.From.node = this;
             MainWindow.IsConnecting = true;
+            MainWindow.mouseState = MouseState.Connecting;
 
             MainWindow.MainCanvas.CaptureMouse();
             Mouse.OverrideCursor = Cursors.Hand;
@@ -98,6 +109,7 @@ namespace NodeGraphTest.Controls
             MainWindow.From.direction = ConnectionDirection.Bottom;
             MainWindow.From.node = this;
             MainWindow.IsConnecting = true;
+            MainWindow.mouseState = MouseState.Connecting;
 
             MainWindow.MainCanvas.CaptureMouse();
             Mouse.OverrideCursor = Cursors.Hand;
@@ -109,6 +121,7 @@ namespace NodeGraphTest.Controls
             MainWindow.From.direction = ConnectionDirection.Left;
             MainWindow.From.node = this;
             MainWindow.IsConnecting = true;
+            MainWindow.mouseState = MouseState.Connecting;
 
             MainWindow.MainCanvas.CaptureMouse();
             Mouse.OverrideCursor = Cursors.Hand;
@@ -120,6 +133,7 @@ namespace NodeGraphTest.Controls
             MainWindow.From.direction = ConnectionDirection.Right;
             MainWindow.From.node = this;
             MainWindow.IsConnecting = true;
+            MainWindow.mouseState = MouseState.Connecting;
 
             MainWindow.MainCanvas.CaptureMouse();
             Mouse.OverrideCursor = Cursors.Hand;
@@ -133,6 +147,7 @@ namespace NodeGraphTest.Controls
                 MainWindow.To.direction = ConnectionDirection.Top;
                 MainWindow.To.node = this;
                 MainWindow.DrawLine();
+                MainWindow.mouseState = MouseState.None;
 
                 MainWindow.MainCanvas.ReleaseMouseCapture();
                 Mouse.OverrideCursor = Cursors.Arrow;
@@ -147,6 +162,7 @@ namespace NodeGraphTest.Controls
                 MainWindow.To.direction = ConnectionDirection.Bottom;
                 MainWindow.To.node = this;
                 MainWindow.DrawLine();
+                MainWindow.mouseState = MouseState.None;
 
                 MainWindow.MainCanvas.ReleaseMouseCapture();
                 Mouse.OverrideCursor = Cursors.Arrow;
@@ -161,6 +177,7 @@ namespace NodeGraphTest.Controls
                 MainWindow.To.direction = ConnectionDirection.Left;
                 MainWindow.To.node = this;
                 MainWindow.DrawLine();
+                MainWindow.mouseState = MouseState.None;
 
                 MainWindow.MainCanvas.ReleaseMouseCapture();
                 Mouse.OverrideCursor = Cursors.Arrow;
@@ -175,6 +192,7 @@ namespace NodeGraphTest.Controls
                 MainWindow.To.direction = ConnectionDirection.Right;
                 MainWindow.To.node = this;
                 MainWindow.DrawLine();
+                MainWindow.mouseState = MouseState.None;
 
                 MainWindow.MainCanvas.ReleaseMouseCapture();
                 Mouse.OverrideCursor = Cursors.Arrow;
@@ -237,20 +255,6 @@ namespace NodeGraphTest.Controls
             return p;
         }
 
-        private void Border_MouseEnter(object sender, MouseEventArgs e)
-        {
-
-            IsEditing = true;
-        }
-
-        private void Border_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (!toolBar.IsMouseOver)
-            {
-                IsEditing = false;
-            }
-        }
-
         private void toolBar_MouseLeave(object sender, MouseEventArgs e)
         {
             if (!IsMouseOver)
@@ -259,21 +263,10 @@ namespace NodeGraphTest.Controls
             }
         }
 
-        private void TextBox_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Mouse.OverrideCursor = Cursors.IBeam;
-            IsOverTextBox = true;
-        }
-
-        private void TextBox_MouseLeave(object sender, MouseEventArgs e)
-        {
-            Mouse.OverrideCursor = Cursors.Arrow;
-            IsOverTextBox = false;
-        }
 
         private void colorFillBtn_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Krill");
+           
         }
 
         private void editBtn_Click(object sender, RoutedEventArgs e)
@@ -299,5 +292,96 @@ namespace NodeGraphTest.Controls
                 border.BorderBrush = Brushes.Transparent;
             }
         }
+
+        private void userControl_MouseEnter(object sender, MouseEventArgs e)
+        {
+            IsEditing = true;
+        }
+
+        private void userControl_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (!toolBar.IsMouseOver)
+            {
+                IsEditing = false;
+            }
+        }
+
+        private void userControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ContextMenu contextMenu = ContextMenu;
+            contextMenu.IsOpen = true;
+            e.Handled = true;
+        }
+
+       
+
+        //MainWindow._activeObject = this;
+        //    MainWindow.offset = e.GetPosition(MainWindow.MainCanvas);
+        //    MainWindow.offset.Y -= Canvas.GetTop(MainWindow._activeObject);
+        //    MainWindow.offset.X -= Canvas.GetLeft(MainWindow._activeObject);
+
+        //    MainWindow.MainCanvas.CaptureMouse();
+        //    Mouse.OverrideCursor = Cursors.Hand;
+
+
+        Stopwatch sw = new();
+        bool IsMouseMoving = false;
+        private void border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            sw.Restart();
+            if (IsMouseMoving)
+            {
+                MainWindow._activeObject = this;
+                MainWindow.offset = e.GetPosition(MainWindow.MainCanvas);
+                MainWindow.offset.Y -= Canvas.GetTop(MainWindow._activeObject);
+                MainWindow.offset.X -= Canvas.GetLeft(MainWindow._activeObject);
+
+                MainWindow.MainCanvas.CaptureMouse();
+                Mouse.OverrideCursor = Cursors.Hand;
+            }
+        }
+
+        private void border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            sw.Stop();
+            if(sw.ElapsedMilliseconds < 120)
+            {
+                if (!MainWindow.selectedItems.Contains(this))
+                {
+                    Highlight(true);
+                    MainWindow.selectedItems.Add(this);
+                }
+            }
+            else
+            {
+                sw.Stop();
+            }
+
+        }
+
+        private void border_MouseMove(object sender, MouseEventArgs e)
+        {
+            sw.Stop();
+            IsMouseMoving = true;
+        }
+
+        private void pasteKB_Execute(object sender, ExecutedRoutedEventArgs e)
+        {
+            Console.WriteLine("Node: Paste");
+
+        }
+
+        private void copyKB_Execute(object sender, ExecutedRoutedEventArgs e)
+        {
+            Console.WriteLine("Node: Copy");
+            MainWindow.CopyNode(this);
+        }
+
+        private void deleteBtn_Click(object sender, ExecutedRoutedEventArgs e)
+        {
+            Console.WriteLine("Node: Delete");
+            MainWindow.DeleteNode(this);
+        }
     }
 }
+

@@ -4,31 +4,69 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NodeGraphTest"
+        xmlns:class ="clr-namespace:NodeGraphTest.Classes"
         mc:Ignorable="d"
         ResizeMode="CanResizeWithGrip"
-        Title="MainWindow" Height="470" Width="800" MinHeight="470" MinWidth="800" BorderBrush="{DynamicResource ErrorBrush}">
+        Title="MainWindow" Height="600" Width="1000" MinHeight="470" MinWidth="800" BorderBrush="{DynamicResource ErrorBrush}" MouseUp="Window_MouseUp" MouseMove="Window_MouseMove" MouseLeave="Window_MouseLeave" MouseLeftButtonDown="Window_MouseLeftButtonDown" FocusManager.IsFocusScope="True" MouseLeftButtonUp="Window_MouseLeftButtonUp">
 
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static class:KeyExecutes.Delete}" Executed="delectKB_Execute"/>
+        <CommandBinding Command="{x:Static class:KeyExecutes.Paste}" Executed="pasteKB_Execute"/>
+        <CommandBinding Command="{x:Static class:KeyExecutes.Copy}" Executed="copyKB_Execute"/>
+        <CommandBinding Command="{x:Static class:KeyExecutes.Cut}" Executed="cutKB_Execute"/>
+        <CommandBinding Command="{x:Static class:KeyExecutes.Undo}" Executed="undoKB_Execute"/>
+        <CommandBinding Command="{x:Static class:KeyExecutes.Redo}" Executed="redoKB_Execute"/>
+        <CommandBinding Command="{x:Static class:KeyExecutes.SelectAll}" Executed="selectAllKB_Execute"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="Delete" Command="{x:Static class:KeyExecutes.Delete}"/>
+        <KeyBinding Modifiers="Ctrl" Key="C" Command="{x:Static class:KeyExecutes.Copy}" />
+        <KeyBinding Modifiers="Ctrl" Key="V" Command="{x:Static class:KeyExecutes.Paste}" />
+        <KeyBinding Modifiers="Ctrl" Key="X" Command="{x:Static class:KeyExecutes.Cut}" />
+        <KeyBinding Modifiers="Ctrl" Key="Z" Command="{x:Static class:KeyExecutes.Undo}" />
+        <KeyBinding Modifiers="Ctrl" Key="R" Command="{x:Static class:KeyExecutes.Redo}" />
+        <KeyBinding Modifiers="Ctrl" Key="A" Command="{x:Static class:KeyExecutes.SelectAll}" />
+    </Window.InputBindings>
+    
     <Grid x:Name="pluh" Background="{StaticResource BodyBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="75"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="175"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <Border BorderThickness="0,0,1,0" Background="#FF1B1B1B" Panel.ZIndex="1">
+        <Border x:Name="headerBar" BorderThickness="0,0,0,1" Background="#FF1B1B1B" Panel.ZIndex="1" Grid.ColumnSpan="2">
             <StackPanel>
-                
+                <TextBlock x:Name="state" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="{StaticResource TextBrush}"/>
+                <TextBlock x:Name="activeObj" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="{StaticResource TextBrush}"/>
+                <TextBlock x:Name="focus" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="{StaticResource TextBrush}"/>
             </StackPanel>
         </Border>
 
-        <Canvas x:Name="MyCanvas" Grid.Column="1" AllowDrop="True" PreviewMouseMove="MyCanvas_PreviewMouseMove" PreviewMouseUp="MyCanvas_PreviewMouseUp" MouseDown="MyCanvas_MouseDown" MouseUp="MyCanvas_MouseUp" Background="#FF1D1D1D" MouseMove="MyCanvas_MouseMove"/>
-
-        <Border Grid.Column="2" Background="{DynamicResource DarkBodyBrush}">
-            <DockPanel Margin="10" LastChildFill="False" >
-                <Button DockPanel.Dock="Top" Click="Button_Click" Content="New Note" Width="100" Height="30" Margin="0,10,0,0" VerticalAlignment="Top" />
-
-                <Button DockPanel.Dock="Bottom" Click="ClearNotes_CLick" Content="Clear Notes" Width="100" Height="30" Margin="0,10,0,10" VerticalAlignment="Top" />
+        <Border x:Name="itemBar" BorderThickness="0,0,1,0" Background="#FF1B1B1B" Panel.ZIndex="1" Grid.Row="1">
+            <DockPanel LastChildFill="False">
+                <Button x:Name="newItemBtn" DockPanel.Dock="Top" Click="Button_Click" Content="New" Margin="10,10,10,10" Width="50" Height="50" />
+                
+                <Button DockPanel.Dock="Bottom" Click="ClearNotes_CLick" Content="Clear" Width="50" Height="50" Margin="0,10,0,10" VerticalAlignment="Top" />
             </DockPanel>
         </Border>
+
+        <Canvas x:Name="MyCanvas" Grid.Column="1" AllowDrop="True" PreviewMouseMove="MyCanvas_PreviewMouseMove" PreviewMouseUp="MyCanvas_PreviewMouseUp" MouseDown="MyCanvas_MouseDown" MouseUp="MyCanvas_MouseUp" Background="#FF1D1D1D" MouseMove="MyCanvas_MouseMove" Grid.Row="1" Focusable="True">
+            <Canvas.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="New Node"/>
+                    <MenuItem Header=""/>
+                    <MenuItem Header=""/>
+                    <MenuItem Header=""/>
+                    <MenuItem Header=""/>
+                </ContextMenu>
+            </Canvas.ContextMenu>
+
+        </Canvas>
+
+
     </Grid>
 </Window>

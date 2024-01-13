@@ -5,22 +5,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NodeGraphTest.Controls"
              xmlns:Converters="clr-namespace:NodeGraphTest.Data.Converters" x:Name="userControl" x:Class="NodeGraphTest.Controls.GraphNode"
+             xmlns:class ="clr-namespace:NodeGraphTest.Classes"
              mc:Ignorable="d" 
-             MinHeight="85" MinWidth="150" MaxWidth="500" MaxHeight="500">
+             MinHeight="85" MinWidth="150" MaxWidth="500" MaxHeight="500" MouseEnter="userControl_MouseEnter" MouseLeave="userControl_MouseLeave" MouseRightButtonDown="userControl_MouseRightButtonDown" ContextMenu="{DynamicResource graphNoeCM}">
     <UserControl.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static class:KeyExecutes.Delete}" Executed="deleteBtn_Click"/>
+        <CommandBinding Command="{x:Static class:KeyExecutes.Paste}" Executed="pasteKB_Execute"/>
+        <CommandBinding Command="{x:Static class:KeyExecutes.Copy}" Executed="copyKB_Execute"/>
+    </UserControl.CommandBindings>
+    <UserControl.InputBindings>
+        <KeyBinding Key="Delete" Command="{x:Static class:KeyExecutes.Delete}"/>
+        <KeyBinding Modifiers="Ctrl" Key="C" Command="{x:Static class:KeyExecutes.Copy}" />
+        <KeyBinding Modifiers="Ctrl" Key="V" Command="{x:Static class:KeyExecutes.Paste}" />
+    </UserControl.InputBindings>
+
     <Grid x:Name="baseGrid">
-        <Border x:Name="border" Grid.Row="1" Background="{StaticResource BodyBrush}" CornerRadius="13" Margin="0,0,0,0" PreviewMouseDown="Border_PreviewMouseDown" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
+        <Border x:Name="border" Grid.Row="1" Background="{StaticResource BodyBrush}" CornerRadius="13" Margin="0,0,0,0" MouseLeftButtonDown="border_MouseLeftButtonDown" MouseLeftButtonUp="border_MouseLeftButtonUp" MouseMove="border_MouseMove" >
             <Grid x:Name="grid" Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="3"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBox Style="{DynamicResource nodeTextBox}" Grid.Row="0" Text="n/a" FontSize="22" Margin="0,3,0,3" FontFamily="Segoe UI" Panel.ZIndex="1" MouseEnter="TextBox_MouseEnter" MouseLeave="TextBox_MouseLeave" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left"/>
-                <Border Grid.Row="1" Background="{StaticResource CtrlHoverBrush}" CornerRadius="1" Margin="0,0,0,0"/>
-                <TextBox Style="{DynamicResource nodeTextBox}" Grid.Row="2" Text="n/a" FontSize="22" Margin="0,3,0,3" FontFamily="Segoe UI" Panel.ZIndex="1" MouseEnter="TextBox_MouseEnter" MouseLeave="TextBox_MouseLeave" TextWrapping="WrapWithOverflow" Width="{Binding ActualWidth, ElementName=grid, Mode=OneWay}"/>
+                <TextBox Style="{DynamicResource nodeTextBox}" Grid.Row="0" Text="{Binding TitleText, ElementName=userControl}" FontSize="22" Margin="0,3,0,3" FontFamily="Segoe UI" Panel.ZIndex="1" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Focusable="False"/>
+                <Border Grid.Row="1" Background="{StaticResource CtrlHoverBrush}" CornerRadius="0" Margin="0,0,0,0"/>
+                <TextBox Style="{DynamicResource nodeTextBox}" Grid.Row="2" Text="{Binding BodyText, ElementName=userControl}" FontSize="22" Margin="0,3,0,3" FontFamily="Segoe UI" Panel.ZIndex="1" TextWrapping="WrapWithOverflow" Width="{Binding ActualWidth, ElementName=grid, Mode=OneWay}" Cursor="IBeam" IsEnabled="False" Background="{DynamicResource HoverBrush}"/>
             </Grid>
         </Border>
 

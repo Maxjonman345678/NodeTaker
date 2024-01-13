@@ -1,4 +1,5 @@
-﻿using NodeGraphTest.Controls;
+﻿using NodeGraphTest.Classes;
+using NodeGraphTest.Controls;
 using NodeGraphTest.Data;
 using System;
 using System.Collections.Generic;
@@ -25,33 +26,119 @@ namespace NodeGraphTest
     /// </summary>
     public partial class MainWindow : Window
     {
+        //Lists
         static List<GraphNode> nodes = new();
+        public static List<GraphNode> selectedItems = new();
+
+        //Mouse State
+        public static MouseState mouseState = MouseState.None;
+
+        //Draging Operation
         public static GraphNode? _activeObject;
         public static Point offset;
         public static Canvas MainCanvas;
 
-        public static MouseState mouseState = MouseState.None;
-
-        public static bool IsConnecting = false;
-        public static bool longPress = false;
-
+       
+        //Line Connection
         public static Connection To = new();
         public static Connection From = new();
+
+        public static Stack<GraphNodeData> UndoNodesList = new(Settings.UndoAmount);
+        public static Stack<GraphNodeData> RedoNodesList = new(Settings.RedoAmount);
+        public static GraphNodeData copiedItem;
 
         System.Timers.Timer time = new System.Timers.Timer();
 
         Point startSelect;
 
-        List<GraphNode> selectedItems = new();
-
-        
-
+        public static bool IsConnecting = false;
 
         public MainWindow()
         {
             InitializeComponent();
             MainCanvas = MyCanvas;
+            Focusable = true;
         }
+
+        #region KeyBind Executes
+
+        public void delectKB_Execute(object sender, RoutedEventArgs e)
+        {
+            Console.Write("MainWindow: Delete");
+            if (selectedItems.Count > 0)
+            {
+                Console.WriteLine($"d {selectedItems.Count} items");
+                foreach (GraphNode n in selectedItems.ToArray())
+                {
+                    DeleteNode(n);
+                }
+                
+            }
+
+            //if (_activeObject != null)
+            //{
+            //    DeleteNode(_activeObject);
+            //}
+        }
+
+        private void copyKB_Execute(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("MainWindow: Paste");
+            //if (_activeObject != null)
+            //{
+            //    copiedItem = new(new GraphNode(new Point(Canvas.GetLeft(_activeObject), Canvas.GetTop(_activeObject)), _activeObject.Width, _activeObject.Height, _activeObject.TitleText, _activeObject.BodyText), new Point(Canvas.GetLeft(_activeObject), Canvas.GetTop(_activeObject)));
+            //    Console.WriteLine($"Coppied {copiedItem != null}");
+            //}
+
+        }
+
+        private void cutKB_Execute(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("MainWindow: Cut");
+        }
+
+
+        private void pasteKB_Execute(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("MainWindow: Pasting");
+            if (copiedItem != null)
+            {
+                PasteNode(copiedItem);
+            }
+        }
+
+        private void undoKB_Execute(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("MainWindow: Undo"); ;
+            //if (UndoNodesList.Count > 0)
+            //{
+            //    GraphNodeData node = UndoNodesList.Pop();
+            //    PasteNode(node);
+            //    RedoNodesList.Push(node);
+            //}
+        }
+
+        private void redoKB_Execute(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("MainWindow: Redo");
+            //if (RedoNodesList.Count > 0)
+            //{
+            //    GraphNodeData node = RedoNodesList.Pop();
+            //    PasteNode(node);
+            //    UndoNodesList.Push(node);
+            //}
+        }
+
+        private void selectAllKB_Execute(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("MainWindow: Select All");
+            foreach (GraphNode node in MyCanvas.Children.OfType<GraphNode>())
+            {
+                node.Highlight(true);
+                selectedItems.Add(node);
+            }
+        }
+        #endregion
 
         Path p = new();
         LineGeometry lg = new();
@@ -60,7 +147,8 @@ namespace NodeGraphTest
             //If not draging node around
             if (_activeObject == null)
             {
-                if (IsConnecting && e.LeftButton == MouseButtonState.Pressed)
+                
+                if (mouseState == MouseState.Connecting && e.LeftButton == MouseButtonState.Pressed)
                 {
                     lg.StartPoint = (Point)From.pos;
 
@@ -73,23 +161,22 @@ namespace NodeGraphTest
                         MyCanvas.Children.Add(p);
                     }
                 }
-                else if (IsConnecting && e.LeftButton == MouseButtonState.Released)
+                else if (mouseState == MouseState.Connecting && e.LeftButton == MouseButtonState.Released)
                 {
-                    MyCanvas.Children.Remove(p);
+                    
+                    //MyCanvas.Children.Remove(p);
                     IsConnecting = false;
+                    MainWindow.mouseState = MouseState.None;
                 }
                 return;
             }
 
-
-            //time.Interval = 30;
-            //time.Enabled = false;
-            //time.AutoReset = true;
-            //time.Elapsed += Time_Elapsed;
-
             var pos = e.GetPosition(sender as IInputElement);
+
             if (pos.X < MyCanvas.ActualWidth && pos.X > 0 && pos.Y < MyCanvas.ActualHeight && pos.Y > 0)
             {
+                mouseState = MouseState.Draging;
+                Keyboard.ClearFocus();
                 Canvas.SetTop(_activeObject, pos.Y - offset.Y);
                 Canvas.SetLeft(_activeObject, pos.X - offset.X);
                 _activeObject.SetPosition(new Point(Canvas.GetLeft(_activeObject) + _activeObject.ActualWidth / 2, Canvas.GetTop(_activeObject) + _activeObject.ActualHeight / 2));
@@ -98,7 +185,7 @@ namespace NodeGraphTest
                 {
                     To.pos = To.node.GetUpdatedPosition((ConnectionDirection)To.direction);
                     From.pos = From.node.GetUpdatedPosition((ConnectionDirection)From.direction);
-                    UpdateLine(From.line, (Point)To.pos);
+                    //UpdateLine(From.line, (Point)To.pos);
                 }
             }
         }
@@ -137,20 +224,25 @@ namespace NodeGraphTest
         private void MyCanvas_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             //_activeObject.ClearValue(EffectProperty);
+            
             _activeObject = null;
+            mouseState = MouseState.None;
             MyCanvas.ReleaseMouseCapture();
             Mouse.OverrideCursor = Cursors.Arrow;
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             GraphNode node = new(new Point(MyCanvas.ActualWidth/ 2, MyCanvas.ActualHeight / 2),150,85);
+            node.TitleText = "";
+            node.BodyText = "";
             MyCanvas.Children.Add(node);
             Canvas.SetZIndex(node, 1);
             Canvas.SetLeft(node, MyCanvas.ActualWidth / 2 - node.MinWidth/2);
             Canvas.SetTop(node, MyCanvas.ActualHeight / 2 - node.MinHeight/2);
             nodes.Add(node);
-            node.IsEditing = false;
+            node.TitleText = "Pluh University";
         }
 
         private void ClearNotes_CLick(object sender, RoutedEventArgs e)
@@ -161,43 +253,47 @@ namespace NodeGraphTest
 
         public static void DeleteNode(GraphNode gn)
         {
+            if (selectedItems.Contains(gn))
+                selectedItems.Remove(gn);
+
+            Point pos = new Point(Canvas.GetLeft(gn), Canvas.GetTop(gn));
+            GraphNodeData gnd = new(new GraphNode(pos, gn.Width,gn.Height,gn.TitleText,gn.BodyText), pos);
+            UndoNodesList.Push(gnd);
             MainCanvas.Children.Remove(gn);
             nodes.Remove(gn);
         }
 
+        public static void PasteNode(GraphNodeData node)
+        {
+            Console.WriteLine($"MainWindow: Pasting with data: Title:{node.Node.TitleText}");
+            GraphNode gnd = new GraphNode(new Point(Canvas.GetLeft(node.Node), Canvas.GetTop(node.Node)), node.Node.Width, node.Node.Height, node.Node.TitleText, node.Node.BodyText);
+            MainCanvas.Children.Add(gnd);
+            Canvas.SetLeft(gnd, node.Position.X);
+            Canvas.SetTop(gnd, node.Position.Y);
+        }
+
+        public static void CopyNode(GraphNode gn)
+        {
+            Console.WriteLine("MainWindow: Recieved Node. Copying.....");
+            GraphNodeData gnd = new(new GraphNode(new Point(Canvas.GetLeft(gn), Canvas.GetTop(gn)), gn.Width, gn.Height, gn.TitleText, gn.BodyText), new Point(Canvas.GetLeft(gn), Canvas.GetTop(gn)));
+            Console.WriteLine($"MainWindow: Node Copied with data: Pos:{gnd.Position} Node{gnd.Node.TitleText}");
+            copiedItem = gnd;
+        }
+
+
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
-            if (selectedItems.Count > 0)
-            {
-                foreach (GraphNode gn in selectedItems)
-                {
-                    gn.Highlight(false);
-                }
-                selectedItems.Clear();
-                r1 = null;
-                MyCanvas.ReleaseMouseCapture();
-                return;
-            }
-
-            if (_activeObject == null)
-            {
-                startSelect = e.GetPosition(MainCanvas);
-                DrawRectangle(new Point(startSelect.X + 1, startSelect.Y+1));
-            }
-    
+           
         }
         
         private void MyCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            time.Enabled = false;
-            //longpress = false;
-            //Console.WriteLine(startSelect + " | " + e.GetPosition(MainCanvas));
             if (_activeObject == null)
             {
                 MyCanvas.Children.Remove(r);
                 MyCanvas.ReleaseMouseCapture();
-
+                
                 if (r1.HasValue)
                 {
                     foreach (GraphNode ui in MyCanvas.Children.OfType<GraphNode>())
@@ -209,10 +305,15 @@ namespace NodeGraphTest
                             selectedItems.Add(ui);
 
                         }
-
                     }
-                    MyCanvas.CaptureMouse();
+                    
                 }
+            }
+
+            var pos = e.GetPosition(MainCanvas);
+            if (!(pos.X < MyCanvas.ActualWidth) && !(pos.X > 0) && !(pos.Y < MyCanvas.ActualHeight) && !(pos.Y > 0))
+            {
+                MyCanvas.Children.Remove(r);
             }
         }
 
@@ -220,7 +321,6 @@ namespace NodeGraphTest
         Rect? r1;
         private void DrawRectangle(Point end)
         {
-            //200 - 300 = -100
             double width = startSelect.X - end.X;
             double height = startSelect.Y - end.Y;
             
@@ -245,10 +345,140 @@ namespace NodeGraphTest
         
         private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && mouseState == MouseState.Selecting)
             {
-                DrawRectangle(e.GetPosition(MainCanvas));
+                var pos = e.GetPosition(MainCanvas);
+                if (pos.X < MyCanvas.ActualWidth && pos.X > 0 && pos.Y < MyCanvas.ActualHeight && pos.Y > 0)
+                {
+                    DrawRectangle(pos);
+                } 
+                
             }
         }
+
+        private void Window_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (MyCanvas.Children.Contains(r) && !MyCanvas.IsMouseOver)
+            {
+                MyCanvas.Children.Remove(r);
+                mouseState = MouseState.None;
+            }
+            
+        }
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            state.Text = mouseState.ToString();
+            activeObj.Text = _activeObject == null ? "Null" : _activeObject.ToString();
+            focus.Text = Keyboard.FocusedElement == null ? "Null" : Keyboard.FocusedElement.ToString();
+
+            if (MyCanvas.IsMouseOver)
+            {
+                switch (mouseState)
+                {
+                    case MouseState.None:
+                        break;
+                    case MouseState.Connecting:
+                        break;
+                    case MouseState.Draging:
+                        break;
+                    case MouseState.Selecting:
+                        break;
+                }
+            }
+            else if (itemBar.IsMouseOver)
+            {
+                switch (mouseState)
+                {
+                    case MouseState.None:
+                        break;
+                    case MouseState.Connecting:
+                        break;
+                    case MouseState.Draging:
+                        break;
+                    case MouseState.Selecting:
+                        break;
+                }
+            }
+        }
+
+        private void Window_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (MyCanvas.Children.Contains(r))
+                MyCanvas.Children.Remove(r);
+            mouseState = MouseState.None;
+        }
+
+        private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (MyCanvas.IsMouseOver)
+            {
+                var pos = e.GetPosition(MainCanvas);
+                ContextMenu contextMenu = MyCanvas.ContextMenu;
+                contextMenu.IsOpen = true;
+                e.Handled = true;
+
+            }
+        }
+
+        private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (MyCanvas.IsMouseOver)
+            {
+                FocusManager.SetFocusedElement(this, this);
+            }
+            foreach (GraphNode n in MyCanvas.Children.OfType<GraphNode>())
+            {
+                if (n.IsMouseOver)
+                {
+                    FocusManager.SetFocusedElement(this, n);
+                }
+            }
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            FocusManager.SetFocusedElement(this, this);
+            if (MyCanvas.IsMouseOver)
+            {
+                if (selectedItems.Count > 0)
+                {
+                    foreach (GraphNode gn in selectedItems)
+                    {
+                        if (!gn.IsMouseOver)
+                        {
+                            gn.Highlight(false);
+                        }
+                    }
+                }
+                selectedItems.Clear();
+
+                if (_activeObject == null && mouseState == MouseState.None)
+                {
+                    startSelect = e.GetPosition(MainCanvas);
+                    DrawRectangle(new Point(startSelect.X + 1, startSelect.Y + 1));
+                    mouseState = MouseState.Selecting;
+                }
+            }
+
+           
+        }
+
+        private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (MyCanvas.IsMouseOver)
+            {
+                FocusManager.SetFocusedElement(this,this);
+            }
+            foreach (GraphNode n in MyCanvas.Children.OfType<GraphNode>())
+            {
+                if (n.IsMouseOver)
+                {
+                    FocusManager.SetFocusedElement(this, n);
+                }
+            }
+            
+        }
+
     }
 }
