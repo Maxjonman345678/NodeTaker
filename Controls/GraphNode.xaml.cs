@@ -31,7 +31,6 @@ namespace NodeGraphTest.Controls
         public Point LeftCon;
         public Point RightCon;
 
-        bool IsOverTextBox = false;
         public GraphNode()
         {
             Focusable = true;
@@ -62,6 +61,13 @@ namespace NodeGraphTest.Controls
             set { SetValue(IsEditingProperty, value); }
         }
 
+        public static readonly DependencyProperty EnableToolMenuProperty = DependencyProperty.Register("EnableToolMenu", typeof(bool), typeof(GraphNode), new PropertyMetadata());
+        public bool EnableToolMenu
+        {
+            get { return (bool)GetValue(EnableToolMenuProperty); }
+            set { SetValue(EnableToolMenuProperty, value); }
+        }
+
         public static readonly DependencyProperty TitleTextProperty = DependencyProperty.Register("TitleText", typeof(string), typeof(GraphNode), new PropertyMetadata());
         public string TitleText
         {
@@ -75,7 +81,6 @@ namespace NodeGraphTest.Controls
             get { return (string)GetValue(BodyTextProperty); }
             set { SetValue(BodyTextProperty, value); }
         }
-
 
         public void SetPosition(Point pos)
         {
@@ -259,7 +264,7 @@ namespace NodeGraphTest.Controls
         {
             if (!IsMouseOver)
             {
-                IsEditing = false;
+                EnableToolMenu = false;
             }
         }
 
@@ -271,7 +276,14 @@ namespace NodeGraphTest.Controls
 
         private void editBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            if (IsEditing)
+            {
+                IsEditing = false;
+            }
+            else
+            {
+                IsEditing = true;
+            }
         }
 
         private void deleteBtn_Click(object sender, RoutedEventArgs e)
@@ -295,14 +307,14 @@ namespace NodeGraphTest.Controls
 
         private void userControl_MouseEnter(object sender, MouseEventArgs e)
         {
-            IsEditing = true;
+            EnableToolMenu = true;
         }
 
         private void userControl_MouseLeave(object sender, MouseEventArgs e)
         {
             if (!toolBar.IsMouseOver)
             {
-                IsEditing = false;
+                EnableToolMenu = false;
             }
         }
 
@@ -314,15 +326,6 @@ namespace NodeGraphTest.Controls
         }
 
        
-
-        //MainWindow._activeObject = this;
-        //    MainWindow.offset = e.GetPosition(MainWindow.MainCanvas);
-        //    MainWindow.offset.Y -= Canvas.GetTop(MainWindow._activeObject);
-        //    MainWindow.offset.X -= Canvas.GetLeft(MainWindow._activeObject);
-
-        //    MainWindow.MainCanvas.CaptureMouse();
-        //    Mouse.OverrideCursor = Cursors.Hand;
-
 
         Stopwatch sw = new();
         bool IsMouseMoving = false;
@@ -344,7 +347,7 @@ namespace NodeGraphTest.Controls
         private void border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             sw.Stop();
-            if(sw.ElapsedMilliseconds < 120)
+            if(sw.ElapsedMilliseconds < 120 && EnableToolMenu)
             {
                 if (!MainWindow.selectedItems.Contains(this))
                 {
@@ -368,7 +371,6 @@ namespace NodeGraphTest.Controls
         private void pasteKB_Execute(object sender, ExecutedRoutedEventArgs e)
         {
             Console.WriteLine("Node: Paste");
-
         }
 
         private void copyKB_Execute(object sender, ExecutedRoutedEventArgs e)

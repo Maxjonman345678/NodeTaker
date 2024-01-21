@@ -83,12 +83,11 @@ namespace NodeGraphTest
 
         private void copyKB_Execute(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("MainWindow: Paste");
-            //if (_activeObject != null)
-            //{
-            //    copiedItem = new(new GraphNode(new Point(Canvas.GetLeft(_activeObject), Canvas.GetTop(_activeObject)), _activeObject.Width, _activeObject.Height, _activeObject.TitleText, _activeObject.BodyText), new Point(Canvas.GetLeft(_activeObject), Canvas.GetTop(_activeObject)));
-            //    Console.WriteLine($"Coppied {copiedItem != null}");
-            //}
+            Console.WriteLine("MainWindow: Copy");
+            if (selectedItems.Count > 0)
+            {
+                //TODO implement.
+            }
 
         }
 

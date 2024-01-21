@@ -1,0 +1,19 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NodeGraphTest.Controls"
+             xmlns:Converters="clr-namespace:NodeGraphTest.Data.Converters" x:Name="userControl" x:Class="NodeGraphTest.Controls.ToggleableTextBox"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <Converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <TextBox x:Name="textTB" Style="{StaticResource nodeTextBox}" Visibility="{Binding CanEdit, ConverterParameter=CanEdit, Converter={StaticResource BoolToVisibilityConverter}, ElementName=userControl}" TextChanged="textTB_TextChanged"/>
+        <TextBlock x:Name="previewText" Margin="3,2,0,0" Text="{Binding PreviewText, ElementName=userControl}" IsHitTestVisible="False" FontSize="11" Foreground="#FF757575"/>
+        <TextBlock Margin="3,1,0,0" Foreground="{StaticResource TextBrush}" Visibility="{Binding CanEdit, ConverterParameter=CanEdit, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=userControl}" Text="{Binding Text, ElementName=textTB}" />
+    </Grid>
+</UserControl>

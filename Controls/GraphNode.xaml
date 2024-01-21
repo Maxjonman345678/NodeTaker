@@ -30,9 +30,11 @@
                     <RowDefinition Height="3"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBox Style="{DynamicResource nodeTextBox}" Grid.Row="0" Text="{Binding TitleText, ElementName=userControl}" FontSize="22" Margin="0,3,0,3" FontFamily="Segoe UI" Panel.ZIndex="1" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Focusable="False"/>
+                <!--<TextBox Style="{DynamicResource nodeTextBox}" Grid.Row="0" Text="{Binding TitleText, ElementName=userControl}" FontSize="22" Margin="0,3,0,3" FontFamily="Segoe UI" Panel.ZIndex="1" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Focusable="False"/>-->
+                <local:ToggleableTextBox x:Name="titleTB" Grid.Row="0" PreviewText="Add a Title..." CanEdit="{Binding IsEditing, ElementName=userControl}" Margin="0,3,0,3" HorizontalAlignment="Left"/>
                 <Border Grid.Row="1" Background="{StaticResource CtrlHoverBrush}" CornerRadius="0" Margin="0,0,0,0"/>
-                <TextBox Style="{DynamicResource nodeTextBox}" Grid.Row="2" Text="{Binding BodyText, ElementName=userControl}" FontSize="22" Margin="0,3,0,3" FontFamily="Segoe UI" Panel.ZIndex="1" TextWrapping="WrapWithOverflow" Width="{Binding ActualWidth, ElementName=grid, Mode=OneWay}" Cursor="IBeam" IsEnabled="False" Background="{DynamicResource HoverBrush}"/>
+                <!--<TextBox Style="{DynamicResource nodeTextBox}" Grid.Row="2" Text="{Binding BodyText, ElementName=userControl}" FontSize="22" Margin="0,3,0,3" FontFamily="Segoe UI" Panel.ZIndex="1" TextWrapping="WrapWithOverflow" Width="{Binding ActualWidth, ElementName=grid, Mode=OneWay}" Cursor="IBeam" IsEnabled="False" Background="{DynamicResource HoverBrush}"/>-->
+                <local:ToggleableTextBox x:Name="bodyTB" Grid.Row="2" PreviewText="Start typing..." CanEdit="{Binding IsEditing, ElementName=userControl}"/>
             </Grid>
         </Border>
 
@@ -43,7 +45,7 @@
 
         <Thumb Style="{DynamicResource resizeNodeGrip}" x:Name="resizeT" VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="{DynamicResource PrimaryBrush}" DragDelta="onDragDelta" DragStarted="onDragStarted" DragCompleted="onDragCompleted" Width="16" Height="16" IsManipulationEnabled="True"/>
 
-        <local:ToolMenu x:Name="toolBar" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-20,0,0" Visibility="{Binding IsEditing, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Converter={StaticResource BoolToVisibilityConverter}}" MouseLeave="toolBar_MouseLeave" Height="20" ColorClick="colorFillBtn_Click" EditClick="editBtn_Click" DeleteClick="deleteBtn_Click"/>
+        <local:ToolMenu x:Name="toolBar" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-20,0,0" Visibility="{Binding EnableToolMenu, RelativeSource={RelativeSource AncestorType={x:Type UserControl}, Mode=FindAncestor}, Converter={StaticResource BoolToVisibilityConverter}}" MouseLeave="toolBar_MouseLeave" Height="20" ColorClick="colorFillBtn_Click" EditClick="editBtn_Click" DeleteClick="deleteBtn_Click"/>
     </Grid>
 
 </UserControl>

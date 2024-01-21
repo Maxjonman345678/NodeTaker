@@ -7,7 +7,7 @@
         xmlns:class ="clr-namespace:NodeGraphTest.Classes"
         mc:Ignorable="d"
         ResizeMode="CanResizeWithGrip"
-        Title="MainWindow" Height="600" Width="1000" MinHeight="470" MinWidth="800" BorderBrush="{DynamicResource ErrorBrush}" MouseUp="Window_MouseUp" MouseMove="Window_MouseMove" MouseLeave="Window_MouseLeave" MouseLeftButtonDown="Window_MouseLeftButtonDown" FocusManager.IsFocusScope="True" MouseLeftButtonUp="Window_MouseLeftButtonUp">
+        Title="MainWindow" Height="600" Width="1000" MinHeight="470" MinWidth="800" MouseUp="Window_MouseUp" MouseMove="Window_MouseMove" MouseLeave="Window_MouseLeave" MouseLeftButtonDown="Window_MouseLeftButtonDown" FocusManager.IsFocusScope="True" MouseLeftButtonUp="Window_MouseLeftButtonUp">
 
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static class:KeyExecutes.Delete}" Executed="delectKB_Execute"/>
